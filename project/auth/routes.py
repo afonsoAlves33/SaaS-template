@@ -1,20 +1,24 @@
 from fastapi import APIRouter, Depends, Response
-from requests import Session
 from starlette import status
-from auth.schemas import UserSchema
-from auth.use_cases import UserUserCases
-from db.main import get_db_session
+from project.db.schemas import UserSchema
+from project.auth.use_cases import UserUseCases
+from project.db.database import get_db
+
 
 router = APIRouter(prefix='/user')
 
 @router.post('/register')
 def register_user(
         user: UserSchema,
-        db_session: Session = Depends(get_db_session()),
+        db_session=Depends(get_db),
 ):
-    uc = UserUserCases(db_session=db_session)
+    uc = UserUseCases(db_session=db_session)
     uc.create_user(user=user)
     return Response(
         content={'msg': 'success'},
         status_code=status.HTTP_201_CREATED
     )
+
+
+
+
