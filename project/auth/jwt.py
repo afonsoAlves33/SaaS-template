@@ -8,6 +8,8 @@ from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from project.db.database import get_db
+from sqlalchemy.orm import Session
+from project.models.user import UserModel
 import jwt
 
 SECRET_KEY = "680c4caa9dd1ffcdb60c27cf432ab3fdda5caa4b5c6b9c6fc159800cee75c01f"
@@ -17,29 +19,32 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 router_auth = APIRouter(prefix='/auth')
 
 fake_users_db = {
-    "afonso": {
-        "username": "afonso",
-        "hashed_password": "$2b$12$9u.ou40KRVeVGxwXatjW/OwsHGxyWEgXNNLhbKpYVHvIHyMZ0zMoO"
-
-    },
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
+    # template
+    "UserName": {
+        "username": "UserName",
+        "password": "Example.ou40KRVeVGxwXatjW/OwsHGxyWEgXNNLhbKpYVHvIHyMZ0zMoO"
     }
 }
 
 
 def add_person_to_dict(
-        user: UserSchema,
-        db_session=Depends(get_db)
+        user: UserSchema | UserModel
 ):
-    uc = UserUseCases(db_session=db_session)
-    result = uc.find_user(user)
-    print(result)
-    return
+    """
+    Testar com UserSchema!!
+    :param user: a user you want to add to the fake_db dict, type: UserModel | UserSchema
+    :return:
+    """
+    try:
+        user_dict = user.__dict__
+        fake_users_db[str(user_dict['username'])] = {
+            "username": str(user_dict['username']),
+            "password": str(user_dict['password'])
+        }
+    except Exception as e:
+        print(e)
+        raise Exception(f"Problem while trying to add user {user.username} to the 'fake_db' dict!")
+    return True
 
 
 class Token(BaseModel):
@@ -80,6 +85,7 @@ def get_password_hash(password):
 def get_user(db, username: str):
     if username in db:
         user_dict = db[username]
+        user_dict['hashed_password'] = user_dict['password']
         return UserInDB(**user_dict)
 
 
@@ -134,12 +140,13 @@ async def get_current_active_user(
 @router_auth.post("/token")
 async def login_for_access_token(
     user: UserSchema,
-    db_session=Depends(get_db)
+    db_session: Session = Depends(get_db)
 ) -> Token:
     uc = UserUseCases(db_session=db_session)
-    result = uc.find_user(user)
-    print("Result is ->",result)
-    user = authenticate_user(fake_users_db, user.username, user.password)
+    user_from_db = uc.find_user_from_username(user)
+    if user_from_db:
+        add_person_to_dict(user_from_db)
+    user = authenticate_user(fake_users_db, str(user.username), str(user.password))
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

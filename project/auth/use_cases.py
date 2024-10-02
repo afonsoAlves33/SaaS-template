@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import HTTPException
 
 from starlette import status
@@ -17,7 +19,7 @@ class UserUseCases:
 
     def create_user(self, user: UserSchema):
         user_model = UserModel(
-            name=user.username,
+            username=user.username,
             password=h.get_password_hash(user.password)
         )
         try:
@@ -29,18 +31,17 @@ class UserUseCases:
                 detail='User already exists'
             )
 
-    def find_user(self, user: UserSchema):
-        # query = f"""
-        #     SELECT * FROM users
-        #     WHERE name = '{user.username}'
-        #     LIMIT 1;
-        # """
+    def find_user_from_username(self, user: UserSchema) -> UserModel | None:
+        """
+        :param user: A user of type UserSchema
+        :return: a Type[UserModel] if the user is found, if it's not, a None type.
+        """
         try:
-            result = self.db_session.query(UserModel)
-        except Exception:
-            raise Exception("Something happend: ",str(e))
+            result = self.db_session.query(UserModel).filter(UserModel.username == user.username).first()
+        except Exception as e:
+            print(e)
+            raise Exception("Something happened while fetching data from the database")
 
         if result:
-            print(result)
             return result
         return None
