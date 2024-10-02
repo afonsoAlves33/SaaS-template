@@ -5,11 +5,10 @@ from fastapi import HTTPException
 from starlette import status
 from project.db.schemas import UserSchema
 from project.models.user import UserModel
-from project.auth import hasher as h
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-
+from project.auth.utils import __get_password_hash as get_passwd_hash
 
 class UserUseCases:
     def __init__(self, db_session: Session):
@@ -20,7 +19,7 @@ class UserUseCases:
     def create_user(self, user: UserSchema):
         user_model = UserModel(
             username=user.username,
-            password=h.get_password_hash(user.password)
+            password=get_passwd_hash(user.password)
         )
         try:
             self.db_session.add(user_model)
