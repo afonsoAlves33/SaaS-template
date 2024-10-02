@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from project.db.exceptions import ExistingDataError
 from typing import Annotated
 from project.db.schemas import UserSchema
 from project.auth.use_cases import UserUseCases
@@ -12,6 +13,7 @@ from sqlalchemy.orm import Session
 from project.models.user import UserModel
 from project.auth.utils import __get_password_hash
 from project.auth.utils import __verify_password
+from sqlalchemy.exc import IntegrityError
 import jwt
 
 SECRET_KEY = "680c4caa9dd1ffcdb60c27cf432ab3fdda5caa4b5c6b9c6fc159800cee75c01f"
@@ -168,8 +170,14 @@ def register_user(
         user: UserSchema,
         db_session=Depends(get_db),
 ):
-        uc = UserUseCases(db_session=db_session)
-        uc.create_user(user=user)
+        try:
+            uc = UserUseCases(db_session=db_session)
+            uc.create_user(user=user)
+        except ExistingDataError:
+            raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='User already exists'
+                        )
         return JSONResponse(
             content={'msg': 'success'},
             status_code=status.HTTP_201_CREATED

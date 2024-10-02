@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import HTTPException
-
+from project.db.exceptions import ExistingDataError
 from starlette import status
 from project.db.schemas import UserSchema
 from project.models.user import UserModel
@@ -25,10 +25,9 @@ class UserUseCases:
             self.db_session.add(user_model)
             self.db_session.commit()
         except IntegrityError:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='User already exists'
-            )
+            # This error occurs when the user try to create a person who already exists
+            raise ExistingDataError(description="User already exists")
+
 
     def find_user_from_username(self, user: UserSchema) -> UserModel | None:
         """
