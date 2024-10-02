@@ -1,11 +1,6 @@
-from typing import Any
-
-from fastapi import HTTPException
 from project.db.exceptions import ExistingDataError
-from starlette import status
 from project.db.schemas import UserSchema
-from project.models.user import UserModel
-from sqlalchemy import select
+from project.db.models import UserModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from project.auth.utils import __get_password_hash as get_passwd_hash
@@ -39,7 +34,6 @@ class UserUseCases:
         except Exception as e:
             print(e)
             raise Exception("Something happened while fetching data from the database")
-
         if result:
             return result
         return None

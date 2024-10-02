@@ -3,17 +3,15 @@ from project.db.exceptions import ExistingDataError
 from typing import Annotated
 from project.db.schemas import UserSchema
 from project.auth.use_cases import UserUseCases
-from fastapi import Depends, FastAPI, HTTPException, status, APIRouter, Response
+from fastapi import Depends, FastAPI, HTTPException, status, APIRouter
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pydantic import BaseModel
 from project.db.database import get_db
 from sqlalchemy.orm import Session
-from project.models.user import UserModel
-from project.auth.utils import __get_password_hash
+from project.db.models import UserModel
 from project.auth.utils import __verify_password
-from sqlalchemy.exc import IntegrityError
 import jwt
 
 SECRET_KEY = "680c4caa9dd1ffcdb60c27cf432ab3fdda5caa4b5c6b9c6fc159800cee75c01f"

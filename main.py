@@ -1,7 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, APIRouter
-from sqlalchemy.orm import Session
+from fastapi import FastAPI, APIRouter
 from project.db import database
-from project.models import user as models
 from project.db.base import Base
 from project.auth.jwt import router_auth
 

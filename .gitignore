@@ -85,4 +85,6 @@ instance/       # Flask and FastAPI default instance directory
 Thumbs.db
 
 .devcontainer
+*.devcontainer
 .idea
+*.idea
