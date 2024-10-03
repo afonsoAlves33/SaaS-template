@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from project.db import database
 from project.db.base import Base
 from project.auth.jwt import router_auth
-from project.services.asaas.customer_manager import router_tests
+from services.asaas import router_tests
 
 # create database data
 Base.metadata.create_all(bind=database.engine)

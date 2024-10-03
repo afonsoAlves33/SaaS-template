@@ -1,9 +1,13 @@
 import requests
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
+from dotenv import load_dotenv
+from project.services.asaas.config import Endpoints
+import os
 
-URL_CUSTOMERS = "https://sandbox.asaas.com/api/v3/customers"
-API_TOKEN = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwOTA1Nzc6OiRhYWNoX2NhMGFjNjg3LTc2NjUtNDIzZi04NWQ4LWVhYmZmOWYxYjNkMw=="
+load_dotenv()
 
+API_TOKEN = os.getenv("API_TOKEN")
+URL_CUSTOMERS = Endpoints.CUSTOMERS
 
 router_tests = APIRouter()
 
@@ -48,7 +52,7 @@ class Customer_Manager():
         )
         return response.json()
 
-    def get_customers(**kwargs) -> dict:
+    def get_all_customers(self, **kwargs) -> dict:
         """
         :param offset: integer - Starting element of the list
         :param limit: integer - ≤ 100 - Number of elements in the list (max: 100)
@@ -71,3 +75,16 @@ class Customer_Manager():
         )
         return response.json()
 
+    def get_customer(self, customer_id: str) -> dict:
+        """
+        :param customer_id: string - Customer's ID a.k.a. cus_id
+        :return: dict
+        """
+        url = URL_CUSTOMERS + f"/{customer_id}"
+        response = requests.get(
+            url=url,
+            headers={
+                "access_token": API_TOKEN
+            }
+        )
+        return response.json()
