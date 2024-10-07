@@ -1,22 +1,57 @@
-# not done yet
+import requests
+from fastapi import FastAPI, APIRouter
+from dotenv import load_dotenv
+from project.services.asaas.config import Endpoints
+from datetime import date
+import os
 
-# import requests
-#
-#
-# class Payment_Generator():
-#     def __init__(self, Payment_Interface):
-#         self.payment_interface = payment_interface
-#
-# def generate_pix_ticket():
-#     url = "https://sandbox.asaas.com/api/v3/payments"
-#     response = requests.post(url=url, headers={
-#         "access_token": "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwOTA1Nzc6OiRhYWNoXzI4NjdkNDY3LTUxNDEtNGI5NC1hYzcyLWY5MGNjMWY3YjE4OQ=="
-#     },data={
-#         "customer": "1",
-#         "billingType": "PIX",
-#         "value": 123.43,
-#         "dueDate": "2024-10-03"
-#     })
-#     print(response)
-#     return response
-#         pass
+load_dotenv()
+
+test_route = APIRouter()
+
+API_TOKEN = os.getenv("API_TOKEN")
+URL_PAYMENT = Endpoints.PAYMENTS
+
+
+class Payment_Generator():
+    def __init__(self):
+        pass
+
+    def generate_pix_ticket(self, customer_id: str, billingType: str, value: float, dueDate: date, **kwargs):
+        url = URL_PAYMENT
+        data = {
+            "customer": customer_id,
+            "billingType": billingType,
+            "value": value,
+            "dueDate": dueDate
+        }
+        data.update(kwargs)
+        try:
+            response = requests.post(
+                url=url,
+                headers={
+                "access_token": API_TOKEN
+                },
+                data=data
+            )
+        except Exception as e:
+            raise e
+        print(response.json())
+        return response.json()
+
+    def list_all_payments(self, **kwargs):
+        url = URL_PAYMENT
+        query_params = {}
+        query_params.update(kwargs)
+        try:
+            response = requests.post(
+                url=url,
+                headers={
+                    "access_token": API_TOKEN
+                },
+                params=query_params
+            )
+        except Exception as e:
+            raise e
+        print(response.json())
+        return response.json()

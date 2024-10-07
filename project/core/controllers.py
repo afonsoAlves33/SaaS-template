@@ -8,24 +8,25 @@ CUSTOMER_ENDPOINT = "/customer"
 def create_customer_in_payment_interface(
         name: str,
         cpfOrCnpj: str,
-        cust_mangmnt: Customer_Manager = Depends(Customer_Manager)
+        cust_mngr: Customer_Manager = Depends(Customer_Manager)
 ):
-    response = cust_mangmnt.create_a_customer(name=name, cpfCnpj=cpfOrCnpj)
+    response = cust_mngr.create_a_customer(name=name, cpfCnpj=cpfOrCnpj)
     return response
 
 @router_customer_management.get(CUSTOMER_ENDPOINT)
-def list_customers(cust_mangmnt: Customer_Manager = Depends(Customer_Manager)):
-    response = cust_mangmnt.get_all_customers()
-    return response # testar se o raise vai funcionar junto ao return
+def list_customers(cust_mngr: Customer_Manager = Depends(Customer_Manager)):
+    response = cust_mngr.get_all_customers()
+    return response #   testar se o raise vai funcionar junto ao return
+                    #   return cust_mngr.get_all_customers()
 
 @router_customer_management.get(CUSTOMER_ENDPOINT+"/{customer_id}")
 def list_customer(
         customer_id : str,
-        cust_mangmnt: Customer_Manager = Depends(Customer_Manager)
+        cust_mngr: Customer_Manager = Depends(Customer_Manager)
 ):
     print(customer_id)
     try:
-        response = cust_mangmnt.get_customer(customer_id)
+        response = cust_mngr.get_customer(customer_id)
     except JSONDecodeError:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Customer does not exist")
     except Exception as e:
