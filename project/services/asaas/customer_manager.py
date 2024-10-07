@@ -1,5 +1,6 @@
 import requests
-from fastapi import APIRouter
+from requests.exceptions import JSONDecodeError
+from fastapi import APIRouter, HTTPException, status
 from dotenv import load_dotenv
 from project.services.asaas.config import Endpoints
 import os
@@ -14,11 +15,11 @@ router_tests = APIRouter()
 class Customer_Manager():
     def __init__(self):
         pass
-
     def create_a_customer(self, name: str, cpfCnpj: str, **kwargs) -> dict:
         """
         :param name: string - mandatory - Name of the customer
         :param cpfCnpj: string - mandatory - CPF or CNPJ of the customer
+        :param kwargs:
         :param email: string - Email of the customer
         :param phone: string - Landline phone number
         :param mobilePhone: string - Mobile phone number
@@ -43,13 +44,16 @@ class Customer_Manager():
             "cpfCnpj": cpfCnpj
         }
         data.update(kwargs)
-        response = requests.post(
-            url=url,
-            headers={
-                "access_token": API_TOKEN
-            },
-            json=data
-        )
+        try:
+            response = requests.post(
+                url=url,
+                headers={
+                    "access_token": API_TOKEN
+                },
+                json=data
+            )
+        except Exception as e:
+            raise e
         return response.json()
 
     def get_all_customers(self, **kwargs) -> dict:
@@ -66,13 +70,16 @@ class Customer_Manager():
         url = URL_CUSTOMERS
         query_params = {}
         query_params.update(kwargs)
-        response = requests.get(
-            url=url,
-            headers={
-                "access_token": API_TOKEN
-            },
-            params=query_params
-        )
+        try:
+            response = requests.get(
+                url=url,
+                headers={
+                    "access_token": API_TOKEN
+                },
+                params=query_params
+            )
+        except Exception as e:
+            raise e
         return response.json()
 
     def get_customer(self, customer_id: str) -> dict:
@@ -80,11 +87,17 @@ class Customer_Manager():
         :param customer_id: string - Customer's ID a.k.a. cus_id
         :return: dict
         """
+        response = False
         url = URL_CUSTOMERS + f"/{customer_id}"
-        response = requests.get(
-            url=url,
-            headers={
-                "access_token": API_TOKEN
-            }
-        )
-        return response.json()
+        try:
+            response = requests.get(
+                url=url,
+                headers={
+                    "access_token": API_TOKEN
+                }
+            )
+            return response.json()
+        except Exception as e:
+            raise e
+
+

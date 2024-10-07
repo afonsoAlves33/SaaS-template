@@ -27,14 +27,6 @@ fake_users_db = {
         "password": "Example.ou40KRVeVGxwXatjW/OwsHGxyWEgXNNLhbKpYVHvIHyMZ0zMoO"
     }
 }
-"""
-TODO:
-
-TESTS
-
-
-"""
-
 
 def add_person_to_dict(
         user: UserSchema | UserModel
