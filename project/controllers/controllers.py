@@ -35,7 +35,6 @@ def list_customer(
         customer_id : str,
         cust_mngr: Customer_Manager = Depends(Customer_Manager)
 ):
-    print(customer_id)
     try:
         response = cust_mngr.get_customer(customer_id)
     except JSONDecodeError:
