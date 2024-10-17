@@ -8,7 +8,7 @@ import os
 load_dotenv()
 
 API_TOKEN = os.getenv("API_TOKEN")
-URL_CUSTOMERS = Endpoints.CUSTOMERS
+URL_CUSTOMERS = Endpoints.ASAAS_CUSTOMERS
 
 router_tests = APIRouter()
 

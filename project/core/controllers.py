@@ -10,6 +10,7 @@ router_payment_management = APIRouter()
 
 CUSTOMER_ENDPOINT = "/customer"
 PAYMENT_ENDPOINT = "/payment"
+
 @router_customer_management.post(CUSTOMER_ENDPOINT)
 def create_customer_in_payment_interface(
         name: str,

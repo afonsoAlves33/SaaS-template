@@ -10,7 +10,7 @@ load_dotenv()
 test_route = APIRouter()
 
 API_TOKEN = os.getenv("API_TOKEN")
-URL_PAYMENT = Endpoints.PAYMENTS
+URL_PAYMENT = Endpoints.ASAAS_PAYMENTS
 
 
 class Payment_Generator():
