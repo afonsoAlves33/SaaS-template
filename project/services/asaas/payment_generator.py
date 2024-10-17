@@ -42,7 +42,7 @@ class Payment_Generator():
         query_params = {}
         query_params.update(kwargs)
         try:
-            response = requests.post(
+            response = requests.get(
                 url=url,
                 headers={
                     "access_token": API_TOKEN

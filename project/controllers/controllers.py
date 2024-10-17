@@ -68,7 +68,7 @@ def generate_payment(
     return response
 
 @router_payment_management.get(PAYMENT_ENDPOINT)
-def generate_payment(
+def list_all_payments(
     paymnt_mngr: Payment_Generator = Depends(Payment_Generator)
 ):
     try:
