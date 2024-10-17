@@ -14,10 +14,8 @@ URL_PAYMENT = Endpoints.PAYMENTS
 
 
 class Payment_Generator():
-    def __init__(self):
-        pass
 
-    def generate_pix_ticket(self, customer_id: str, billingType: str, value: float, dueDate: date, **kwargs):
+    def generate_payment(self, customer_id: str, value: float, dueDate: date,  billingType: str, **kwargs) -> dict:
         url = URL_PAYMENT
         data = {
             "customer": customer_id,
@@ -39,7 +37,7 @@ class Payment_Generator():
         print(response.json())
         return response.json()
 
-    def list_all_payments(self, **kwargs):
+    def list_all_payments(self, **kwargs) -> dict:
         url = URL_PAYMENT
         query_params = {}
         query_params.update(kwargs)
