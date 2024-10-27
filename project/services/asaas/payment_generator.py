@@ -34,7 +34,6 @@ class Payment_Generator():
             )
         except Exception as e:
             raise e
-        print(response.json())
         return response.json()
 
     def list_all_payments(self, **kwargs) -> dict:
@@ -51,5 +50,4 @@ class Payment_Generator():
             )
         except Exception as e:
             raise e
-        print(response.json())
         return response.json()
