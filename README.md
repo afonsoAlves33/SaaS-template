@@ -1,1 +1,1 @@
-A backend for any SaaS client. This project will generate payment schemes for client integration, manage clients, and generate license keys.
+A backend for any SaaS client. This project will generate payment schemes, manage clients, and generate license keys for client.
