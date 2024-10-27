@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from datetime import datetime
 from typing import Optional
 from requests.exceptions import JSONDecodeError
 from project.services.asaas.customer_manager import Customer_Manager
@@ -29,7 +28,7 @@ def list_customers(cust_mngr: Customer_Manager = Depends(Customer_Manager)):
     response = cust_mngr.get_all_customers()
     if "errors" in response.keys():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=response["errors"])
-    return response #   testar se o raise vai funcionar junto ao return
+    return response#   testar se o raise vai funcionar junto ao return
                     #   return cust_mngr.get_all_customers()
 
 @router_customer_management.get(CUSTOMER_ENDPOINT+"/{customer_id}", tags=[Tags.CUSTOMERS])
@@ -62,7 +61,6 @@ def generate_payment(
         response = paymnt_mngr.generate_payment(customer_id=customer_id, value=value, dueDate=dueDate, billingType=billingType)
     except Exception as e:
         print(e)
-    
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not generate payment with this data")
     if "errors" in response.keys():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=response["errors"])
