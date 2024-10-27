@@ -4,13 +4,15 @@ from project.db.models import UserModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from project.auth.utils import __get_password_hash as get_passwd_hash
+from project.decorators import log_errors
 
 class UserUseCases:
+    @log_errors
     def __init__(self, db_session: Session):
         self.db_session = db_session
         pass
 
-
+    @log_errors
     def create_user(self, user: UserSchema):
         user_model = UserModel(
             username=user.username,
@@ -23,7 +25,7 @@ class UserUseCases:
             # This error occurs when the user try to create a person who already exists
             raise ExistingDataError(description="User already exists")
 
-
+    @log_errors
     def find_user_from_username(self, user: UserSchema) -> UserModel | None:
         """
         :param user: A user of type UserSchema

@@ -12,6 +12,7 @@ from project.db.database import get_db
 from sqlalchemy.orm import Session
 from project.db.models import UserModel
 from project.auth.utils import __verify_password
+from project.decorators import log_errors
 import jwt
 
 SECRET_KEY = "680c4caa9dd1ffcdb60c27cf432ab3fdda5caa4b5c6b9c6fc159800cee75c01f"
@@ -28,6 +29,7 @@ fake_users_db = {
     }
 }
 
+@log_errors
 def add_person_to_dict(
         user: UserSchema | UserModel
 ):
@@ -77,14 +79,14 @@ app = FastAPI()
 
 
 
-
+@log_errors
 def __get_user(db, username: str):
     if username in db:
         user_dict = db[username]
         user_dict['hashed_password'] = user_dict['password']
         return UserInDB(**user_dict)
 
-
+@log_errors
 def __authenticate_user(fake_db, username: str, password: str):
     user = __get_user(fake_db, username)
     if not user:
@@ -93,7 +95,7 @@ def __authenticate_user(fake_db, username: str, password: str):
         return False
     return user
 
-
+@log_errors
 def __create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -104,7 +106,7 @@ def __create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
+@log_errors
 async def __get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -124,7 +126,7 @@ async def __get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credentials_exception
     return user
 
-
+@log_errors
 async def __get_current_active_user(
     current_user: Annotated[User, Depends(__get_current_user)],
 ):
