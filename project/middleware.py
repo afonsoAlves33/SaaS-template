@@ -3,7 +3,7 @@ from project.log_config import logger
 from starlette.middleware.base import _StreamingResponse
 import time
 
-async def log_middleware(request: Request, call_next):
+async def log_requests_middleware(request: Request, call_next):
     start = time.time()
     response: _StreamingResponse = await call_next(request)
     process_time = time.time() - start

@@ -3,6 +3,7 @@ from requests.exceptions import JSONDecodeError
 from fastapi import APIRouter, HTTPException, status
 from dotenv import load_dotenv
 from project.services.asaas.config import Endpoints
+from project.decorators import log_errors
 import os
 
 load_dotenv()
@@ -15,6 +16,8 @@ router_tests = APIRouter()
 class Customer_Manager():
     def __init__(self):
         pass
+
+    @log_errors
     def create_a_customer(self, name: str, cpfCnpj: str, **kwargs) -> dict:
         """
         :param name: string - mandatory - Name of the customer
@@ -56,6 +59,7 @@ class Customer_Manager():
             raise e
         return response.json()
 
+    @log_errors
     def get_all_customers(self, **kwargs) -> dict:
         """
         :param offset: integer - Starting element of the list
