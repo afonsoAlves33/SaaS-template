@@ -181,11 +181,4 @@ def get_users(db: Session = Depends(get_db)):
     return users
 
 
-# TODO: 
-# Gotta make it work 
 
-# @router_auth.get("/users/me/", response_model=User)
-# async def read_users_me(
-#     current_user: Annotated[User, Depends(get_current_active_user)],
-# ):
-#     return current_user
